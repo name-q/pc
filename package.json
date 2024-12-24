@@ -1,0 +1,20 @@
+{
+  "name": "pc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/name-q/pc.git"
+  },
+  "keywords": [],
+  "author": "name-q",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/name-q/pc/issues"
+  },
+  "homepage": "https://github.com/name-q/pc#readme"
+}
