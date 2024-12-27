@@ -118,6 +118,9 @@ module.exports = {
         }),
     ],
     optimization: {
+        moduleIds: 'deterministic',
+        chunkIds: 'deterministic',
+        usedExports: true,
         splitChunks: {
             chunks: "all",
         },
@@ -136,7 +139,7 @@ module.exports = {
         open: true,
         host: "localhost",
         port: 8000,
-        hot: false,
+        hot: true,
         compress: true,
         historyApiFallback: true,
     },
