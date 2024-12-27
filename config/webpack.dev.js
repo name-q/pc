@@ -4,6 +4,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
+// 引入运行时模块
+const reactRefreshRuntimeEntry = require.resolve("react-refresh/runtime");
+
+// 工具方法：获取样式加载器
 const getStyleLoaders = (preProcessor = []) => {
     return [
         "style-loader",
@@ -12,9 +16,7 @@ const getStyleLoaders = (preProcessor = []) => {
             loader: "postcss-loader",
             options: {
                 postcssOptions: {
-                    plugins: [
-                        "postcss-preset-env",
-                    ],
+                    plugins: ["postcss-preset-env"],
                 },
             },
         },
@@ -40,7 +42,16 @@ module.exports = {
                     },
                     {
                         test: /\.less$/,
-                        use: getStyleLoaders(["less-loader"]),
+                        use: getStyleLoaders([
+                            {
+                                loader: "less-loader",
+                                options: {
+                                    lessOptions: {
+                                        strictMath: true,
+                                    },
+                                },
+                            },
+                        ]),
                     },
                     {
                         test: /\.s[ac]ss$/,
@@ -68,8 +79,7 @@ module.exports = {
                             cacheDirectory: true,
                             cacheCompression: false,
                             plugins: [
-                                // "@babel/plugin-transform-runtime", // presets中包含了
-                                "react-refresh/babel", // 开启js的HMR功能
+                                "react-refresh/babel", // 开启 HMR 功能
                             ],
                         },
                     },
@@ -90,22 +100,18 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "../public/index.html"),
         }),
-        new ReactRefreshWebpackPlugin(), // 解决js的HMR功能运行时全局变量的问题
-        // 将public下面的资源复制到dist目录去（除了index.html）
+        new ReactRefreshWebpackPlugin({
+            overlay: false, // 可选：关闭热更新错误的覆盖层
+        }),
         new CopyPlugin({
             patterns: [
                 {
                     from: path.resolve(__dirname, "../public"),
                     to: path.resolve(__dirname, "../dist"),
                     toType: "dir",
-                    noErrorOnMissing: true, // 不生成错误
+                    noErrorOnMissing: true,
                     globOptions: {
-                        // 忽略文件
                         ignore: ["**/index.html"],
-                    },
-                    info: {
-                        // 跳过terser压缩js
-                        minimized: true,
                     },
                 },
             ],
@@ -118,18 +124,22 @@ module.exports = {
         runtimeChunk: {
             name: (entrypoint) => `runtime-${entrypoint.name}`,
         },
+        sideEffects: false,
     },
     resolve: {
         extensions: [".jsx", ".js", ".json"],
+        alias: {
+            "react-refresh/runtime": reactRefreshRuntimeEntry,
+        },
     },
     devServer: {
         open: true,
         host: "localhost",
         port: 8000,
-        hot: true,
+        hot: false,
         compress: true,
         historyApiFallback: true,
     },
     mode: "development",
-    devtool: "cheap-module-source-map",
+    devtool: "source-map",
 };
