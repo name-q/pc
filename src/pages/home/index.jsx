@@ -1,11 +1,11 @@
 import React from "react";
-import './index2.less'
 import './index.less'
+import './index2.less'
 
 const Home = () => {
     return (
         <>
-            <p className="title">Home1211122211</p>
+            <p className="title">Home</p>
         </>
     )
 }
